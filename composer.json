@@ -22,7 +22,9 @@
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "roave/better-reflection": "^2.0",
+        "symfony/finder": "^4.0"
     },
     "require-dev": {
         "ext-PDO": "*"
