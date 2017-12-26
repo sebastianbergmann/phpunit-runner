@@ -1,0 +1,50 @@
+{
+    "name": "phpunit/phpunit",
+    "description": "The PHP Unit Testing framework.",
+    "type": "library",
+    "keywords": [
+        "phpunit",
+        "xunit",
+        "testing"
+    ],
+    "homepage": "https://phpunit.de/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sebastian@phpunit.de",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/sebastianbergmann/phpunit/issues"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.2"
+    },
+    "require-dev": {
+        "ext-PDO": "*"
+    },
+    "config": {
+        "platform": {
+            "php": "7.2.0"
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "bin": [
+        "phpunit"
+    ],
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "8.0-dev"
+        }
+    }
+}
