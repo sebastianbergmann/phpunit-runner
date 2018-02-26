@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPUnit\Runner;
+namespace PHPUnit\NewRunner;
 
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
