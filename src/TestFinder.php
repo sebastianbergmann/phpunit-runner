@@ -13,10 +13,12 @@ namespace PHPUnit\Runner;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionMethod;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\SourceLocator\Exception\EmptyPhpSourceCode;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -36,6 +38,14 @@ final class TestFinder
             foreach ($this->findClassesInFile($file) as $class) {
                 if (!$this->isTestClass($class)) {
                     continue;
+                }
+
+                foreach ($class->getMethods() as $method) {
+                    if (!$this->isTestMethod($method)) {
+                        continue;
+                    }
+
+                    // TODO
                 }
             }
         }
@@ -81,7 +91,8 @@ final class TestFinder
         return new AggregateSourceLocator(
             [
                 new StringSourceLocator($source, $astLocator),
-                new AutoloadSourceLocator($astLocator)
+                new AutoloadSourceLocator($astLocator),
+                new PhpInternalSourceLocator($astLocator)
             ]
         );
     }
@@ -89,5 +100,26 @@ final class TestFinder
     private function isTestClass(ReflectionClass $class): bool
     {
         return $class->isSubclassOf(TestCase::class);
+    }
+
+    private function isTestMethod(ReflectionMethod $method): bool
+    {
+        if (\strpos($method->getName(), 'test') !== 0) {
+            return false;
+        }
+
+        if ($method->isAbstract() || !$method->isPublic()) {
+            return false;
+        }
+
+        if ($method->getDeclaringClass()->getName() === 'PHPUnit\Framework\Assert') {
+            return false;
+        }
+
+        if ($method->getDeclaringClass()->getName() === 'PHPUnit\Framework\TestCase') {
+            return false;
+        }
+
+        return true;
     }
 }
