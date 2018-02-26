@@ -10,6 +10,7 @@
 
 namespace PHPUnit\NewRunner;
 
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflection\ReflectionClass;
@@ -149,11 +150,11 @@ final class TestFinder
             return false;
         }
 
-        if ($method->getDeclaringClass()->getName() === 'PHPUnit\Framework\Assert') {
+        if ($method->getDeclaringClass()->getName() === Assert::class) {
             return false;
         }
 
-        if ($method->getDeclaringClass()->getName() === 'PHPUnit\Framework\TestCase') {
+        if ($method->getDeclaringClass()->getName() === TestCase::class) {
             return false;
         }
 
