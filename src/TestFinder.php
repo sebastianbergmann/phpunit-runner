@@ -26,6 +26,16 @@ use Symfony\Component\Finder\SplFileInfo;
 final class TestFinder
 {
     /**
+     * @var Cache
+     */
+    private $cache;
+
+    public function __construct(Cache $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
      * @throws EmptyPhpSourceCode
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -35,19 +45,15 @@ final class TestFinder
         $tests = new TestCollection;
 
         foreach ($this->findTestFilesInDirectories($directories) as $file) {
-            foreach ($this->findClassesInFile($file) as $class) {
-                if (!$this->isTestClass($class)) {
-                    continue;
-                }
+            if ($this->cache->has($file->getRealPath())) {
+                $testsInFile = $this->cache->get($file->getRealPath());
+            } else {
+                $testsInFile = $this->findTestsInFile($file);
 
-                foreach ($class->getMethods() as $method) {
-                    if (!$this->isTestMethod($method)) {
-                        continue;
-                    }
-
-                    // TODO
-                }
+                $this->cache->set($file->getRealPath(), $testsInFile);
             }
+
+            $tests->addFrom($testsInFile);
         }
 
         return $tests;
@@ -66,6 +72,33 @@ final class TestFinder
                ->sortByName();
 
         return $finder;
+    }
+
+    private function findTestsInFile(SplFileInfo $file): TestCollection
+    {
+        $tests = new TestCollection;
+
+        foreach ($this->findClassesInFile($file) as $class) {
+            if (!$this->isTestClass($class)) {
+                continue;
+            }
+
+            $className = $class->getName();
+
+            print $className . PHP_EOL;
+
+            foreach ($class->getMethods() as $method) {
+                if (!$this->isTestMethod($method)) {
+                    continue;
+                }
+
+                print '  ' . $method->getName() . PHP_EOL;
+
+                $tests->add(new TestMethod($file->getRealPath(), $className, $method->getName()));
+            }
+        }
+
+        return $tests;
     }
 
     /**

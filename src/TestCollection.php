@@ -22,6 +22,13 @@ final class TestCollection implements \IteratorAggregate
         $this->tests[] = $test;
     }
 
+    public function addFrom(self $tests): void
+    {
+        foreach ($tests as $test) {
+            $this->tests[] = $test;
+        }
+    }
+
     /**
      * @return Test[]
      */
