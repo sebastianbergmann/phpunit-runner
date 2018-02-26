@@ -13,6 +13,7 @@ namespace PHPUnit\Runner;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Exception\EmptyPhpSourceCode;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
@@ -21,6 +22,11 @@ use Symfony\Component\Finder\SplFileInfo;
 
 final class TestFinder
 {
+    /**
+     * @throws EmptyPhpSourceCode
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
     public function find(array $directories): TestCollection
     {
         $tests = new TestCollection;
@@ -36,6 +42,9 @@ final class TestFinder
         return $tests;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     private function findTestFilesInDirectories(array $directories): Finder
     {
         $finder = new Finder;
@@ -48,6 +57,10 @@ final class TestFinder
         return $finder;
     }
 
+    /**
+     * @throws \RuntimeException
+     * @throws EmptyPhpSourceCode
+     */
     private function findClassesInFile(SplFileInfo $file): array
     {
         $reflector = new ClassReflector($this->createSourceLocator($file->getContents()));
@@ -55,6 +68,9 @@ final class TestFinder
         return $reflector->getAllClasses();
     }
 
+    /**
+     * @throws EmptyPhpSourceCode
+     */
     private function createSourceLocator(string $source): AggregateSourceLocator
     {
         $astLocator = (new BetterReflection())->astLocator();
