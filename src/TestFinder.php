@@ -74,6 +74,10 @@ final class TestFinder
         return $finder;
     }
 
+    /**
+     * @throws \RuntimeException
+     * @throws EmptyPhpSourceCode
+     */
     private function findTestsInFile(SplFileInfo $file): TestCollection
     {
         $tests = new TestCollection;
