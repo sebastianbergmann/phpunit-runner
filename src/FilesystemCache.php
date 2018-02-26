@@ -13,6 +13,11 @@ namespace PHPUnit\NewRunner;
 final class FilesystemCache implements Cache
 {
     /**
+     * @var int
+     */
+    private const VERSION = 1;
+
+    /**
      * @var string
      */
     private $directory;
@@ -73,6 +78,6 @@ final class FilesystemCache implements Cache
 
     private function cacheFile(string $sourceFile): string
     {
-        return $this->directory . '/' . \hash('sha256', $sourceFile);
+        return $this->directory . '/' . \hash('sha256', self::VERSION . $sourceFile);
     }
 }
