@@ -12,6 +12,7 @@ namespace PHPUnit\Runner;
 
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflection\ReflectionClass;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\SourceLocator\Exception\EmptyPhpSourceCode;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
@@ -33,8 +34,8 @@ final class TestFinder
 
         foreach ($this->findTestFilesInDirectories($directories) as $file) {
             foreach ($this->findClassesInFile($file) as $class) {
-                if ($class->isSubclassOf(TestCase::class)) {
-                    print '*';
+                if (!$this->isTestClass($class)) {
+                    continue;
                 }
             }
         }
@@ -61,7 +62,7 @@ final class TestFinder
      * @throws \RuntimeException
      * @throws EmptyPhpSourceCode
      *
-     * @return \Roave\BetterReflection\Reflection\ReflectionClass[]
+     * @return ReflectionClass[]
      */
     private function findClassesInFile(SplFileInfo $file): array
     {
@@ -83,5 +84,10 @@ final class TestFinder
                 new AutoloadSourceLocator($astLocator)
             ]
         );
+    }
+
+    private function isTestClass(ReflectionClass $class): bool
+    {
+        return $class->isSubclassOf(TestCase::class);
     }
 }
