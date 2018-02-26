@@ -60,6 +60,8 @@ final class TestFinder
     /**
      * @throws \RuntimeException
      * @throws EmptyPhpSourceCode
+     *
+     * @return \Roave\BetterReflection\Reflection\ReflectionClass[]
      */
     private function findClassesInFile(SplFileInfo $file): array
     {
