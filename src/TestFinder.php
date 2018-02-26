@@ -90,14 +90,10 @@ final class TestFinder
 
             $className = $class->getName();
 
-            print $className . PHP_EOL;
-
             foreach ($class->getMethods() as $method) {
                 if (!$this->isTestMethod($method)) {
                     continue;
                 }
-
-                print '  ' . $method->getName() . PHP_EOL;
 
                 $tests->add(new TestMethod($file->getRealPath(), $className, $method->getName()));
             }
