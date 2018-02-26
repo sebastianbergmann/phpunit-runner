@@ -1,6 +1,6 @@
 {
-    "name": "phpunit/phpunit",
-    "description": "The PHP Unit Testing framework.",
+    "name": "phpunit/phpunit-runner",
+    "description": "Experimental runner for PHPUnit tests",
     "type": "library",
     "keywords": [
         "phpunit",
@@ -17,12 +17,13 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/sebastianbergmann/phpunit/issues"
+        "issues": "https://github.com/sebastianbergmann/phpunit-runner/issues"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
         "php": "^7.2",
+        "phpunit/phpunit": "^7.0",
         "roave/better-reflection": "^2.0",
         "symfony/finder": "^4.0"
     },
@@ -46,7 +47,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "8.0-dev"
+            "dev-master": "1.0-dev"
         }
     }
 }
