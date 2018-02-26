@@ -40,11 +40,10 @@ final class TestFinder
     {
         $finder = new Finder;
 
-        $finder
-            ->files()
-            ->in($directories)
-            ->name('*Test.php')
-            ->sortByName();
+        $finder->files()
+               ->in($directories)
+               ->name('*Test.php')
+               ->sortByName();
 
         return $finder;
     }
