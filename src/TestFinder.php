@@ -133,7 +133,7 @@ final class TestFinder
 
     private function isTestClass(ReflectionClass $class): bool
     {
-        return $class->isSubclassOf(TestCase::class);
+        return !$class->isAbstract() && $class->isSubclassOf(TestCase::class);
     }
 
     private function isTestMethod(ReflectionMethod $method): bool
