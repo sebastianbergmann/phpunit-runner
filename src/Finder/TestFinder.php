@@ -98,8 +98,9 @@ final class TestFinder
                     continue;
                 }
 
-                $dataProvider = $this->dataProvider($sourceFile, $className, $method->getDocComment());
-                $dependencies = $this->dependencies($sourceFile, $className, $method->getDocComment());
+                $annotations  = $this->annotations($method->getDocComment());
+                $dataProvider = $this->dataProvider($sourceFile, $className, $annotations);
+                $dependencies = $this->dependencies($sourceFile, $className, $annotations);
 
                 if (\count($dataProvider) > 0 && \count($dependencies) > 0) {
                     throw new NotYetSupportedException(
@@ -175,25 +176,48 @@ final class TestFinder
         return true;
     }
 
+    private function annotations(string $docBlock): AnnotationCollection
+    {
+        $annotations = new AnnotationCollection;
+        $docBlock    = (string) \substr($docBlock, 3, -2);
+
+        if (\preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docBlock, $matches)) {
+            $numMatches = \count($matches[0]);
+
+            for ($i = 0; $i < $numMatches; ++$i) {
+                $annotations->add(
+                    new Annotation(
+                        (string) $matches['name'][$i],
+                        (string) $matches['value'][$i]
+                    )
+                );
+            }
+        }
+
+        return $annotations;
+    }
+
     /**
      * @throws NotYetSupportedException
      */
-    private function dataProvider(string $className, string $sourceFile, string $docComment): DataProviderCollection
+    private function dataProvider(string $className, string $sourceFile, AnnotationCollection $annotations): DataProviderCollection
     {
         $dataProvider = new DataProviderCollection;
 
-        if (\preg_match_all('/@dataProvider\s+([a-zA-Z0-9._:-\\\\x7f-\xff]+)/', $docComment, $matches)) {
-            foreach ($matches[1] as $match) {
-                if (\strpos($match, '::') === false) {
-                    $dataProvider->add(new DataProvider($sourceFile, $className, $match));
-
-                    continue;
-                }
-
-                throw new NotYetSupportedException(
-                    'Using a data provider from another class is not yet supported'
-                );
+        foreach ($annotations as $annotation) {
+            if ($annotation->name() !== 'dataProvider') {
+                continue;
             }
+
+            if (\strpos($annotation->value(), '::') === false) {
+                $dataProvider->add(new DataProvider($sourceFile, $className, $annotation->value()));
+
+                continue;
+            }
+
+            throw new NotYetSupportedException(
+                'Using a data provider from another class is not yet supported'
+            );
         }
 
         return $dataProvider;
@@ -202,22 +226,24 @@ final class TestFinder
     /**
      * @throws NotYetSupportedException
      */
-    private function dependencies(string $className, string $sourceFile, string $docComment): TestMethodCollection
+    private function dependencies(string $className, string $sourceFile, AnnotationCollection $annotations): TestMethodCollection
     {
         $dependencies = new TestMethodCollection;
 
-        if (\preg_match_all('/@depends\s+([a-zA-Z0-9._:-\\\\x7f-\xff]+)/', $docComment, $matches)) {
-            foreach ($matches[1] as $match) {
-                if (\strpos($match, '::') === false) {
-                    $dependencies->add(new TestMethod($sourceFile, $className, $match));
-
-                    continue;
-                }
-
-                throw new NotYetSupportedException(
-                    'Depending on test methods in another class is not yet supported'
-                );
+        foreach ($annotations as $annotation) {
+            if ($annotation->name() !== 'depends') {
+                continue;
             }
+
+            if (\strpos($annotation->value(), '::') === false) {
+                $dependencies->add(new TestMethod($sourceFile, $className, $annotation->value()));
+
+                continue;
+            }
+
+            throw new NotYetSupportedException(
+                'Depending on test methods in another class is not yet supported'
+            );
         }
 
         return $dependencies;
