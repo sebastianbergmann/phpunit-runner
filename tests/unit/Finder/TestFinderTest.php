@@ -31,31 +31,35 @@ final class TestFinderTest extends TestCase
      */
     private $finder;
 
+    private $fixtureDirectory;
+
     protected function setUp(): void
     {
         /** @var Cache|MockObject $cache */
         $cache = $this->createMock(Cache::class);
 
         $this->finder = new TestFinder($cache);
+
+        $this->fixtureDirectory = \realpath(__DIR__ . '/../../_fixture');
     }
 
     public function testFindsTestMethods(): void
     {
         /** @var TestMethod[] $tests */
-        $tests = \iterator_to_array($this->finder->find([__DIR__ . '/../_fixture']));
+        $tests = \iterator_to_array($this->finder->find([$this->fixtureDirectory]));
 
         $this->assertInstanceOf(TestMethod::class, $tests[0]);
-        $this->assertEquals(\realpath(__DIR__ . '/../_fixture/FooTest.php'), $tests[0]->sourceFile());
+        $this->assertEquals($this->fixtureDirectory . '/' . 'FooTest.php', $tests[0]->sourceFile());
         $this->assertEquals('PHPUnit\NewRunner\FooTest', $tests[0]->className());
         $this->assertEquals('testOne', $tests[0]->methodName());
 
         $this->assertInstanceOf(TestMethodWithDependencies::class, $tests[1]);
-        $this->assertEquals(\realpath(__DIR__ . '/../_fixture/FooTest.php'), $tests[1]->sourceFile());
+        $this->assertEquals($this->fixtureDirectory . '/' . 'FooTest.php', $tests[1]->sourceFile());
         $this->assertEquals('PHPUnit\NewRunner\FooTest', $tests[1]->className());
         $this->assertEquals('testTwo', $tests[1]->methodName());
 
         $this->assertInstanceOf(TestMethodWithDataProvider::class, $tests[2]);
-        $this->assertEquals(\realpath(__DIR__ . '/../_fixture/FooTest.php'), $tests[2]->sourceFile());
+        $this->assertEquals($this->fixtureDirectory . '/' . 'FooTest.php', $tests[2]->sourceFile());
         $this->assertEquals('PHPUnit\NewRunner\FooTest', $tests[2]->className());
         $this->assertEquals('testThree', $tests[2]->methodName());
     }
