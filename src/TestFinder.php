@@ -37,6 +37,7 @@ final class TestFinder
     }
 
     /**
+     * @throws \PHPUnit\NewRunner\NotYetSupportedException
      * @throws EmptyPhpSourceCode
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
