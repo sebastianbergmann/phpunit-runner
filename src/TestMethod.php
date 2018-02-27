@@ -27,7 +27,7 @@ class TestMethod implements Test
      */
     private $methodName;
 
-    public function __construct(string $sourceFile, string $className, $methodName)
+    public function __construct(string $sourceFile, string $className, string $methodName)
     {
         $this->sourceFile = $sourceFile;
         $this->className  = $className;
