@@ -76,6 +76,7 @@ final class TestFinder
     }
 
     /**
+     * @throws NotYetSupportedException
      * @throws \RuntimeException
      * @throws EmptyPhpSourceCode
      */
@@ -88,14 +89,30 @@ final class TestFinder
                 continue;
             }
 
-            $className = $class->getName();
+            $className  = $class->getName();
+            $sourceFile = $file->getRealPath();
 
             foreach ($class->getMethods() as $method) {
                 if (!$this->isTestMethod($method)) {
                     continue;
                 }
 
-                $tests->add(new TestMethod($file->getRealPath(), $className, $method->getName()));
+                $dataProvider = $this->dataProvider($sourceFile, $className, $method->getDocComment());
+                $dependencies = $this->dependencies($sourceFile, $className, $method->getDocComment());
+
+                if (\count($dataProvider) > 0 && \count($dependencies) > 0) {
+                    throw new NotYetSupportedException(
+                        'Using @dataProvider and @depends at the same time is not yet supported'
+                    );
+                }
+
+                if ($dataProvider->count() > 0) {
+                    $tests->add(new TestMethodWithDataProvider($sourceFile, $className, $method->getName(), $dataProvider));
+                } elseif ($dependencies->count() > 0) {
+                    $tests->add(new TestMethodWithDependencies($sourceFile, $className, $method->getName(), $dependencies));
+                } else {
+                    $tests->add(new TestMethod($sourceFile, $className, $method->getName()));
+                }
             }
         }
 
@@ -155,5 +172,53 @@ final class TestFinder
         }
 
         return true;
+    }
+
+    /**
+     * @throws NotYetSupportedException
+     */
+    private function dataProvider(string $className, string $sourceFile, string $docComment): DataProviderCollection
+    {
+        $dataProvider = new DataProviderCollection;
+
+        if (\preg_match_all('/@dataProvider\s+([a-zA-Z0-9._:-\\\\x7f-\xff]+)/', $docComment, $matches)) {
+            foreach ($matches[1] as $match) {
+                if (\strpos($match, '::') === false) {
+                    $dataProvider->add(new DataProvider($sourceFile, $className, $match));
+
+                    continue;
+                }
+
+                throw new NotYetSupportedException(
+                    'Using a data provider from another class is not yet supported'
+                );
+            }
+        }
+
+        return $dataProvider;
+    }
+
+    /**
+     * @throws NotYetSupportedException
+     */
+    private function dependencies(string $className, string $sourceFile, string $docComment): TestMethodCollection
+    {
+        $dependencies = new TestMethodCollection;
+
+        if (\preg_match_all('/@depends\s+([a-zA-Z0-9._:-\\\\x7f-\xff]+)/', $docComment, $matches)) {
+            foreach ($matches[1] as $match) {
+                if (\strpos($match, '::') === false) {
+                    $dependencies->add(new TestMethod($sourceFile, $className, $match));
+
+                    continue;
+                }
+
+                throw new NotYetSupportedException(
+                    'Depending on test methods in another class is not yet supported'
+                );
+            }
+        }
+
+        return $dependencies;
     }
 }
