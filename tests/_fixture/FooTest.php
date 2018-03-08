@@ -11,6 +11,9 @@ namespace PHPUnit\NewRunner;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers Foo
+ */
 final class FooTest extends TestCase
 {
     public function testOne(): bool

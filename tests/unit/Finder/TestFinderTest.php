@@ -52,15 +52,21 @@ final class TestFinderTest extends TestCase
         $this->assertEquals($this->fixtureDirectory . '/' . 'FooTest.php', $tests[0]->sourceFile());
         $this->assertEquals('PHPUnit\NewRunner\FooTest', $tests[0]->className());
         $this->assertEquals('testOne', $tests[0]->methodName());
+        $this->assertEquals([new Annotation('covers', 'Foo')], \iterator_to_array($tests[0]->classLevelAnnotations()));
+        $this->assertEmpty($tests[0]->methodLevelAnnotations());
 
-        $this->assertInstanceOf(TestMethodWithDependencies::class, $tests[1]);
+        $this->assertInstanceOf(TestMethod::class, $tests[1]);
         $this->assertEquals($this->fixtureDirectory . '/' . 'FooTest.php', $tests[1]->sourceFile());
         $this->assertEquals('PHPUnit\NewRunner\FooTest', $tests[1]->className());
         $this->assertEquals('testTwo', $tests[1]->methodName());
+        $this->assertEquals([new Annotation('covers', 'Foo')], \iterator_to_array($tests[1]->classLevelAnnotations()));
+        $this->assertEquals([new Annotation('depends', 'testOne')], \iterator_to_array($tests[1]->methodLevelAnnotations()));
 
-        $this->assertInstanceOf(TestMethodWithDataProvider::class, $tests[2]);
+        $this->assertInstanceOf(TestMethod::class, $tests[2]);
         $this->assertEquals($this->fixtureDirectory . '/' . 'FooTest.php', $tests[2]->sourceFile());
         $this->assertEquals('PHPUnit\NewRunner\FooTest', $tests[2]->className());
         $this->assertEquals('testThree', $tests[2]->methodName());
+        $this->assertEquals([new Annotation('covers', 'Foo')], \iterator_to_array($tests[2]->classLevelAnnotations()));
+        $this->assertEquals([new Annotation('dataProvider', 'dataProvider')], \iterator_to_array($tests[2]->methodLevelAnnotations()));
     }
 }

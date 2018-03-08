@@ -27,11 +27,23 @@ class TestMethod implements Test
      */
     private $methodName;
 
-    public function __construct(string $sourceFile, string $className, string $methodName)
+    /**
+     * @var AnnotationCollection
+     */
+    private $classLevelAnnotations;
+
+    /**
+     * @var AnnotationCollection
+     */
+    private $methodLevelAnnotations;
+
+    public function __construct(string $sourceFile, string $className, string $methodName, AnnotationCollection $classLevelAnnotations, AnnotationCollection $methodLevelAnnotations)
     {
-        $this->sourceFile = $sourceFile;
-        $this->className  = $className;
-        $this->methodName = $methodName;
+        $this->sourceFile             = $sourceFile;
+        $this->className              = $className;
+        $this->methodName             = $methodName;
+        $this->classLevelAnnotations  = $classLevelAnnotations;
+        $this->methodLevelAnnotations = $methodLevelAnnotations;
     }
 
     public function sourceFile(): string
@@ -47,5 +59,15 @@ class TestMethod implements Test
     public function methodName(): string
     {
         return $this->methodName;
+    }
+
+    public function classLevelAnnotations(): AnnotationCollection
+    {
+        return $this->classLevelAnnotations;
+    }
+
+    public function methodLevelAnnotations(): AnnotationCollection
+    {
+        return $this->methodLevelAnnotations;
     }
 }

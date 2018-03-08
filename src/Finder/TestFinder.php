@@ -37,7 +37,6 @@ final class TestFinder
     }
 
     /**
-     * @throws \PHPUnit\NewRunner\NotYetSupportedException
      * @throws EmptyPhpSourceCode
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -77,7 +76,6 @@ final class TestFinder
     }
 
     /**
-     * @throws NotYetSupportedException
      * @throws \RuntimeException
      * @throws EmptyPhpSourceCode
      */
@@ -90,31 +88,24 @@ final class TestFinder
                 continue;
             }
 
-            $className  = $class->getName();
-            $sourceFile = $file->getRealPath();
+            $className             = $class->getName();
+            $sourceFile            = $file->getRealPath();
+            $classLevelAnnotations = $this->annotations($class->getDocComment());
 
             foreach ($class->getMethods() as $method) {
                 if (!$this->isTestMethod($method)) {
                     continue;
                 }
 
-                $annotations  = $this->annotations($method->getDocComment());
-                $dataProvider = $this->dataProvider($sourceFile, $className, $annotations);
-                $dependencies = $this->dependencies($sourceFile, $className, $annotations);
-
-                if (\count($dataProvider) > 0 && \count($dependencies) > 0) {
-                    throw new NotYetSupportedException(
-                        'Using @dataProvider and @depends at the same time is not yet supported'
-                    );
-                }
-
-                if ($dataProvider->count() > 0) {
-                    $tests->add(new TestMethodWithDataProvider($sourceFile, $className, $method->getName(), $dataProvider));
-                } elseif ($dependencies->count() > 0) {
-                    $tests->add(new TestMethodWithDependencies($sourceFile, $className, $method->getName(), $dependencies));
-                } else {
-                    $tests->add(new TestMethod($sourceFile, $className, $method->getName()));
-                }
+                $tests->add(
+                    new TestMethod(
+                        $sourceFile,
+                        $className,
+                        $method->getName(),
+                        $classLevelAnnotations,
+                        $this->annotations($method->getDocComment())
+                    )
+                );
             }
         }
 
@@ -195,57 +186,5 @@ final class TestFinder
         }
 
         return $annotations;
-    }
-
-    /**
-     * @throws NotYetSupportedException
-     */
-    private function dataProvider(string $className, string $sourceFile, AnnotationCollection $annotations): DataProviderCollection
-    {
-        $dataProvider = new DataProviderCollection;
-
-        foreach ($annotations as $annotation) {
-            if ($annotation->name() !== 'dataProvider') {
-                continue;
-            }
-
-            if (\strpos($annotation->value(), '::') === false) {
-                $dataProvider->add(new DataProvider($sourceFile, $className, $annotation->value()));
-
-                continue;
-            }
-
-            throw new NotYetSupportedException(
-                'Using a data provider from another class is not yet supported'
-            );
-        }
-
-        return $dataProvider;
-    }
-
-    /**
-     * @throws NotYetSupportedException
-     */
-    private function dependencies(string $className, string $sourceFile, AnnotationCollection $annotations): TestMethodCollection
-    {
-        $dependencies = new TestMethodCollection;
-
-        foreach ($annotations as $annotation) {
-            if ($annotation->name() !== 'depends') {
-                continue;
-            }
-
-            if (\strpos($annotation->value(), '::') === false) {
-                $dependencies->add(new TestMethod($sourceFile, $className, $annotation->value()));
-
-                continue;
-            }
-
-            throw new NotYetSupportedException(
-                'Depending on test methods in another class is not yet supported'
-            );
-        }
-
-        return $dependencies;
     }
 }
