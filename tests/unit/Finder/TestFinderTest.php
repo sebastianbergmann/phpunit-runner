@@ -11,6 +11,9 @@ namespace PHPUnit\NewRunner;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\NewRunner\TestFixture\BarTest;
+use PHPUnit\NewRunner\TestFixture\FooTest;
+use PHPUnit\NewRunner\TestFixture\MyTestCase;
 
 /**
  * @covers PHPUnit\NewRunner\TestFinder
@@ -107,6 +110,63 @@ final class TestFinderTest extends TestCase
                         'dataProvider'
                     )
                 )
+            ),
+            $tests,
+            '',
+            false,
+            false
+        );
+
+        $this->assertNotContains(
+            new TestMethod(
+                $this->fixtureDirectory . '/' . 'MyTestCase.php',
+                MyTestCase::class,
+                'testOne',
+                AnnotationCollection::fromArray(
+                    new Annotation(
+                        'group',
+                        'default'
+                    )
+                ),
+                AnnotationCollection::fromArray()
+            ),
+            $tests,
+            '',
+            false,
+            false
+        );
+
+        $this->assertContains(
+            new TestMethod(
+                $this->fixtureDirectory . '/' . 'BarTest.php',
+                BarTest::class,
+                'testOne',
+                AnnotationCollection::fromArray(
+                    new Annotation(
+                        'covers',
+                        'Bar'
+                    )
+                ),
+                AnnotationCollection::fromArray()
+            ),
+            $tests,
+            '',
+            false,
+            false
+        );
+
+        $this->assertContains(
+            new TestMethod(
+                $this->fixtureDirectory . '/' . 'BarTest.php',
+                BarTest::class,
+                'testTwo',
+                AnnotationCollection::fromArray(
+                    new Annotation(
+                        'covers',
+                        'Bar'
+                    )
+                ),
+                AnnotationCollection::fromArray()
             ),
             $tests,
             '',
