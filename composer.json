@@ -16,9 +16,6 @@
             "role": "lead"
         }
     ],
-    "support": {
-        "issues": "https://github.com/sebastianbergmann/phpunit-runner/issues"
-    },
     "prefer-stable": true,
     "minimum-stability": "dev",
     "require": {
