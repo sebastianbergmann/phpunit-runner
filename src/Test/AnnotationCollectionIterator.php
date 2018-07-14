@@ -14,7 +14,7 @@ final class AnnotationCollectionIterator implements \Iterator
     /**
      * @var Annotation[]
      */
-    private $items;
+    private $annotations;
 
     /**
      * @var int
@@ -23,7 +23,7 @@ final class AnnotationCollectionIterator implements \Iterator
 
     public function __construct(AnnotationCollection $collection)
     {
-        $this->items = $collection->getItems();
+        $this->annotations = $collection->annotations();
     }
 
     public function rewind(): void
@@ -33,7 +33,7 @@ final class AnnotationCollectionIterator implements \Iterator
 
     public function valid(): bool
     {
-        return $this->position < \count($this->items);
+        return $this->position < \count($this->annotations);
     }
 
     public function key(): int
@@ -43,7 +43,7 @@ final class AnnotationCollectionIterator implements \Iterator
 
     public function current(): Annotation
     {
-        return $this->items[$this->position];
+        return $this->annotations[$this->position];
     }
 
     public function next(): void

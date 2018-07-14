@@ -31,7 +31,7 @@ final class TestCollection implements \IteratorAggregate
     /**
      * @return Test[]
      */
-    public function getItems(): array
+    public function tests(): array
     {
         return $this->tests;
     }

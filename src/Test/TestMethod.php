@@ -9,7 +9,7 @@
  */
 namespace PHPUnit\NewRunner;
 
-class TestMethod implements Test
+final class TestMethod implements Test
 {
     /**
      * @var string

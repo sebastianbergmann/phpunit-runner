@@ -34,6 +34,9 @@ final class TestFinderTest extends TestCase
      */
     private $finder;
 
+    /**
+     * @var string
+     */
     private $fixtureDirectory;
 
     protected function setUp(): void

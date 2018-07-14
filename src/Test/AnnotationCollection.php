@@ -40,7 +40,7 @@ final class AnnotationCollection implements \Countable, \IteratorAggregate
     /**
      * @return Annotation[]
      */
-    public function getItems(): array
+    public function annotations(): array
     {
         return $this->annotations;
     }

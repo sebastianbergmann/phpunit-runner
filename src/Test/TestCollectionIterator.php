@@ -14,7 +14,7 @@ final class TestCollectionIterator implements \Iterator
     /**
      * @var Test[]
      */
-    private $items;
+    private $tests;
 
     /**
      * @var int
@@ -23,7 +23,7 @@ final class TestCollectionIterator implements \Iterator
 
     public function __construct(TestCollection $collection)
     {
-        $this->items = $collection->getItems();
+        $this->tests = $collection->tests();
     }
 
     public function rewind(): void
@@ -33,7 +33,7 @@ final class TestCollectionIterator implements \Iterator
 
     public function valid(): bool
     {
-        return $this->position < \count($this->items);
+        return $this->position < \count($this->tests);
     }
 
     public function key(): int
@@ -43,7 +43,7 @@ final class TestCollectionIterator implements \Iterator
 
     public function current(): Test
     {
-        return $this->items[$this->position];
+        return $this->tests[$this->position];
     }
 
     public function next(): void
