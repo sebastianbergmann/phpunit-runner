@@ -27,9 +27,6 @@
         "roave/better-reflection": "^3.0",
         "symfony/finder": "^4.0"
     },
-    "require-dev": {
-        "ext-PDO": "*"
-    },
     "config": {
         "platform": {
             "php": "7.2.0"
