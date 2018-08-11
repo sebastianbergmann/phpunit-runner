@@ -16,7 +16,7 @@ final class AnnotationCollection implements \Countable, \IteratorAggregate
      */
     private $annotations = [];
 
-    public static function fromArray(Annotation ...$annotations): self
+    public static function fromList(Annotation ...$annotations): self
     {
         $result = new self;
 

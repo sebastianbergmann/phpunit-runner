@@ -16,7 +16,7 @@ final class DirectoryCollection implements \Countable, \IteratorAggregate
      */
     private $directories = [];
 
-    public static function fromArray(Directory ...$directories): self
+    public static function fromList(Directory ...$directories): self
     {
         $collection = new self;
 

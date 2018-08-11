@@ -51,20 +51,20 @@ final class TestFinderTest extends TestCase
 
     public function testFindsTestMethods(): void
     {
-        $tests = $this->finder->find(DirectoryCollection::fromArray($this->fixtureDirectory));
+        $tests = $this->finder->find(DirectoryCollection::fromList($this->fixtureDirectory));
 
         $this->assertContains(
             new TestMethod(
                 $this->fixtureDirectory . '/' . 'FooTest.php',
                 FooTest::class,
                 'testOne',
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'covers',
                         'Foo'
                     )
                 ),
-                AnnotationCollection::fromArray()
+                AnnotationCollection::fromList()
             ),
             $tests,
             '',
@@ -77,13 +77,13 @@ final class TestFinderTest extends TestCase
                 $this->fixtureDirectory . '/' . 'FooTest.php',
                 FooTest::class,
                 'testTwo',
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'covers',
                         'Foo'
                     )
                 ),
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'depends',
                         'testOne'
@@ -101,13 +101,13 @@ final class TestFinderTest extends TestCase
                 $this->fixtureDirectory . '/' . 'FooTest.php',
                 FooTest::class,
                 'testThree',
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'covers',
                         'Foo'
                     )
                 ),
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'dataProvider',
                         'dataProvider'
@@ -125,13 +125,13 @@ final class TestFinderTest extends TestCase
                 $this->fixtureDirectory . '/' . 'MyTestCase.php',
                 MyTestCase::class,
                 'testOne',
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'group',
                         'default'
                     )
                 ),
-                AnnotationCollection::fromArray()
+                AnnotationCollection::fromList()
             ),
             $tests,
             '',
@@ -144,13 +144,13 @@ final class TestFinderTest extends TestCase
                 $this->fixtureDirectory . '/' . 'BarTest.php',
                 BarTest::class,
                 'testOne',
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'covers',
                         'Bar'
                     )
                 ),
-                AnnotationCollection::fromArray()
+                AnnotationCollection::fromList()
             ),
             $tests,
             '',
@@ -163,13 +163,13 @@ final class TestFinderTest extends TestCase
                 $this->fixtureDirectory . '/' . 'BarTest.php',
                 BarTest::class,
                 'testTwo',
-                AnnotationCollection::fromArray(
+                AnnotationCollection::fromList(
                     new Annotation(
                         'covers',
                         'Bar'
                     )
                 ),
-                AnnotationCollection::fromArray()
+                AnnotationCollection::fromList()
             ),
             $tests,
             '',
