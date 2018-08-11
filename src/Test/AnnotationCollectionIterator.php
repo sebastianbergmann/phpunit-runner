@@ -23,7 +23,7 @@ final class AnnotationCollectionIterator implements \Iterator
 
     public function __construct(AnnotationCollection $collection)
     {
-        $this->annotations = $collection->annotations();
+        $this->annotations = $collection->asArray();
     }
 
     public function rewind(): void

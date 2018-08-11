@@ -40,7 +40,7 @@ final class DirectoryCollection implements \Countable, \IteratorAggregate
     /**
      * @return Directory[]
      */
-    public function directories(): array
+    public function asArray(): array
     {
         return $this->directories;
     }

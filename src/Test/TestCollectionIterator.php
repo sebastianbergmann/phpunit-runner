@@ -23,7 +23,7 @@ final class TestCollectionIterator implements \Iterator
 
     public function __construct(TestCollection $collection)
     {
-        $this->tests = $collection->tests();
+        $this->tests = $collection->asArray();
     }
 
     public function rewind(): void

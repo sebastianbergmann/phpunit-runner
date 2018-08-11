@@ -67,7 +67,7 @@ final class TestFinder
         $finder = new Finder;
 
         $finder->files()
-               ->in($directories->directories())
+               ->in($directories->asArray())
                ->name('*Test.php')
                ->sortByName();
 

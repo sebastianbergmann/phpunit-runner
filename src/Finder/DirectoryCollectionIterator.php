@@ -23,7 +23,7 @@ final class DirectoryCollectionIterator implements \Iterator
 
     public function __construct(DirectoryCollection $collection)
     {
-        $this->directories = $collection->directories();
+        $this->directories = $collection->asArray();
     }
 
     public function rewind(): void
