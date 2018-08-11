@@ -35,7 +35,7 @@ final class TestFinderTest extends TestCase
     private $finder;
 
     /**
-     * @var string
+     * @var Directory
      */
     private $fixtureDirectory;
 
@@ -46,12 +46,12 @@ final class TestFinderTest extends TestCase
 
         $this->finder = new TestFinder($cache);
 
-        $this->fixtureDirectory = \realpath(__DIR__ . '/../../_fixture');
+        $this->fixtureDirectory = Directory::fromString(__DIR__ . '/../../_fixture');
     }
 
     public function testFindsTestMethods(): void
     {
-        $tests = $this->finder->find([$this->fixtureDirectory]);
+        $tests = $this->finder->find(DirectoryCollection::fromArray($this->fixtureDirectory));
 
         $this->assertContains(
             new TestMethod(

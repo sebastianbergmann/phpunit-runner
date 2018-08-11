@@ -40,7 +40,7 @@ final class TestFinder
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function find(array $directories): TestCollection
+    public function find(DirectoryCollection $directories): TestCollection
     {
         $tests = new TestCollection;
 
@@ -62,12 +62,12 @@ final class TestFinder
     /**
      * @throws \InvalidArgumentException
      */
-    private function findTestFilesInDirectories(array $directories): Finder
+    private function findTestFilesInDirectories(DirectoryCollection $directories): Finder
     {
         $finder = new Finder;
 
         $finder->files()
-               ->in($directories)
+               ->in($directories->directories())
                ->name('*Test.php')
                ->sortByName();
 
