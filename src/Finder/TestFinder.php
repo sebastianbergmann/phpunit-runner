@@ -89,7 +89,7 @@ final class TestFinder
 
             $className             = $class->getName();
             $sourceFile            = $file->getRealPath();
-            $classLevelAnnotations = $this->annotations($class->getDocComment());
+            $classLevelAnnotations = $this->parseAnnotations($class->getDocComment());
 
             foreach ($class->getMethods() as $method) {
                 if (!$this->isTestMethod($method)) {
@@ -102,7 +102,7 @@ final class TestFinder
                         $className,
                         $method->getName(),
                         $classLevelAnnotations,
-                        $this->annotations($method->getDocComment())
+                        $this->parseAnnotations($method->getDocComment())
                     )
                 );
             }
@@ -166,7 +166,7 @@ final class TestFinder
         return true;
     }
 
-    private function annotations(string $docBlock): AnnotationCollection
+    private function parseAnnotations(string $docBlock): AnnotationCollection
     {
         $annotations = new AnnotationCollection;
         $docBlock    = (string) \substr($docBlock, 3, -2);
