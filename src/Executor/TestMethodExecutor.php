@@ -9,14 +9,24 @@
  */
 namespace PHPUnit\NewRunner;
 
-final class TestMethodExecutor
+final class TestMethodExecutor implements Executor
 {
-    public function execute(TestMethod $testMethod): void
-    {
-        require_once $testMethod->sourceFile();
+    /**
+     * @var TestMethod
+     */
+    private $method;
 
-        $className  = $testMethod->className();
-        $methodName = $testMethod->methodName();
+    public function __construct(TestMethod $method)
+    {
+        $this->method = $method;
+    }
+
+    public function execute(Result $result): void
+    {
+        require_once $this->method->sourceFile();
+
+        $className  = $this->method->className();
+        $methodName = $this->method->methodName();
 
         $test = new $className;
 

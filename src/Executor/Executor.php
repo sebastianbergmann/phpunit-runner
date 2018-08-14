@@ -9,7 +9,7 @@
  */
 namespace PHPUnit\NewRunner;
 
-interface Test
+interface Executor
 {
-    public function getExecutor(): Executor;
+    public function execute(Result $result): void;
 }

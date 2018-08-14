@@ -9,7 +9,6 @@
  */
 namespace PHPUnit\NewRunner;
 
-interface Test
+final class Result
 {
-    public function getExecutor(): Executor;
 }

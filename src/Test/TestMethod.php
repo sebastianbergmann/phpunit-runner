@@ -69,4 +69,9 @@ final class TestMethod implements Test
     {
         return $this->methodLevelAnnotations;
     }
+
+    public function getExecutor(): Executor
+    {
+        return new TestMethodExecutor($this);
+    }
 }
