@@ -46,14 +46,14 @@ final class TestFinder
 
         foreach ($this->findTestFilesInDirectories($directories) as $file) {
             if ($this->cache->has($file->getRealPath())) {
-                $testsInFile = $this->cache->get($file->getRealPath());
+                $testMethodsInFile = $this->cache->get($file->getRealPath());
             } else {
-                $testsInFile = $this->findTestsInFile($file);
+                $testMethodsInFile = $this->findTestMethodsInFile($file);
 
-                $this->cache->set($file->getRealPath(), $testsInFile);
+                $this->cache->set($file->getRealPath(), $testMethodsInFile);
             }
 
-            $tests->addFrom($testsInFile);
+            $tests->addFrom($testMethodsInFile);
         }
 
         return $tests;
@@ -78,15 +78,11 @@ final class TestFinder
      * @throws \RuntimeException
      * @throws EmptyPhpSourceCode
      */
-    private function findTestsInFile(SplFileInfo $file): TestCollection
+    private function findTestMethodsInFile(SplFileInfo $file): TestCollection
     {
         $tests = new TestCollection;
 
-        foreach ($this->findClassesInFile($file) as $class) {
-            if (!$this->isTestClass($class)) {
-                continue;
-            }
-
+        foreach ($this->findTestClassesInFile($file) as $class) {
             $className             = $class->getName();
             $sourceFile            = $file->getRealPath();
             $classLevelAnnotations = $this->parseAnnotations($class->getDocComment());
@@ -117,11 +113,20 @@ final class TestFinder
      *
      * @return ReflectionClass[]
      */
-    private function findClassesInFile(SplFileInfo $file): array
+    private function findTestClassesInFile(SplFileInfo $file): array
     {
-        $reflector = new ClassReflector($this->createSourceLocator($file->getContents()));
+        $reflector   = new ClassReflector($this->createSourceLocator($file->getContents()));
+        $testClasses = [];
 
-        return $reflector->getAllClasses();
+        foreach ($reflector->getAllClasses() as $class) {
+            if (!$this->isTestClass($class)) {
+                continue;
+            }
+
+            $testClasses[] = $class;
+        }
+
+        return $testClasses;
     }
 
     /**
