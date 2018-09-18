@@ -9,7 +9,6 @@
  */
 namespace PHPUnit\NewRunner;
 
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflection\ReflectionClass;
@@ -157,14 +156,6 @@ final class TestFinder
         }
 
         if ($method->isAbstract() || !$method->isPublic()) {
-            return false;
-        }
-
-        if ($method->getDeclaringClass()->getName() === Assert::class) {
-            return false;
-        }
-
-        if ($method->getDeclaringClass()->getName() === TestCase::class) {
             return false;
         }
 
